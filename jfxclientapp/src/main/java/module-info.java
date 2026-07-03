@@ -3,6 +3,7 @@ module jfxclientapp {
     requires javafx.fxml;
     requires bankdata;
     requires org.slf4j;
+    requires spring.context;
 
     opens io.github.unawarespecs.bankapp to javafx.fxml;
     exports io.github.unawarespecs.bankapp;

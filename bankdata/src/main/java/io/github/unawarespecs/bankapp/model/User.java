@@ -28,11 +28,10 @@ public class User {
         this.isAdmin = false;
     }
 
-    public User(String username, boolean isAdmin) {
-        this.username = username;
+    public User(UUID uuid, String role, boolean isAdmin) {
+        this.uuid = uuid;
+        this.role = role;
         this.isAdmin = isAdmin;
-        this.role = "User";
-        this.uuid = UUID.randomUUID();
     }
 
 }

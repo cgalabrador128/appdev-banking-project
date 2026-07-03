@@ -18,6 +18,7 @@
     <modules>
         <module>bankdata</module>
         <module>jfxclientapp</module>
+        <module>bankdb</module>
     </modules>
 
     <properties>

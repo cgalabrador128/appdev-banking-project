@@ -22,11 +22,11 @@ public interface BankInterface {
     // admin operations
     Customer[] getCustomers() throws Exception;
 
-    Customer createAccount(Customer cust) throws Exception;
+    void createAccount(Customer cust) throws Exception;
 
     Customer updateAccount(Customer cust) throws Exception;
 
-    void deleteAccount(Integer id) throws Exception;
+    void deleteAccount(Customer cust) throws Exception;
 
     Administrator getAdminAccount(Integer id) throws Exception;
 
@@ -39,13 +39,12 @@ public interface BankInterface {
     Administrator updateAdminAccount(Administrator admin) throws Exception;
 
     // customer facing info
-    double checkBalance(Customer cust) throws NumberFormatException;
+    double checkBalance(Customer cust) throws Exception;
 
-    void depositMoney(Customer cust, double amount) throws NumberFormatException;
+    void depositMoney(Customer cust, double amount) throws Exception;
 
-    void withdrawMoney(Customer cust, double amount) throws NumberFormatException;
+    void withdrawMoney(Customer cust, double amount) throws Exception;
 
-    void transferMoney(Customer source, Customer destination) throws Exception;
-
+    void transferMoney(Customer source, Customer destination, double amt) throws Exception;
     // loan stuff
 }

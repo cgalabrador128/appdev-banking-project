@@ -3,18 +3,26 @@ package io.github.unawarespecs.bankapp.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.UUID;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class Administrator extends User {
+
     public Administrator() {
-        this.setRole("Administrator");
+        // Default Here
+        super();
+        this.setRole("Admin");
+        this.setId(0); // ID CANNOT BE 0 THIS WILL BE CHANGED LATER ON IF NOT EXPLICITEDLY IMPLEMENTED
     }
 
-    public Administrator(int id, String name) {
-        // Username, password, and role are handled here.
-        super(name, true);
-        this.setRole("Administrator");
-        this.setId(id);
+    public Administrator(UUID uuid, String role, boolean isAdmin, String username, String password, int id) {
+        // ??
+        super(uuid, role, isAdmin);
+        this.setUsername(username);
+        this.setPassword(password);
+        this.setRole(role);
+        this.setId(id); // ID CANNOT BE 0 THIS WILL BE CHANGED LATER ON IF NOT EXPLICITEDLY IMPLEMENTED
     }
 
     @Override
