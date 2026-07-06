@@ -17,7 +17,7 @@ public class Administrator extends User {
     }
 
     public Administrator(UUID uuid, String role, boolean isAdmin, String username, String password, int id) {
-        // ??
+        // this is used to call the User() constructor directly
         super(uuid, role, isAdmin);
         this.setUsername(username);
         this.setPassword(password);

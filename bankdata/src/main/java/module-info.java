@@ -6,6 +6,8 @@ module bankdata {
     requires spring.data.commons;
     requires spring.context;
     requires spring.data.jpa;
+    requires org.jspecify;
+    requires jakarta.annotation;
 
 //    exports io.github.unawarespecs.bankapp.entity;
     exports io.github.unawarespecs.bankapp.model;

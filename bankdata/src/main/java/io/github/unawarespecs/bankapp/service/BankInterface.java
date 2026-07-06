@@ -46,5 +46,18 @@ public interface BankInterface {
     void withdrawMoney(Customer cust, double amount) throws Exception;
 
     void transferMoney(Customer source, Customer destination, double amt) throws Exception;
+
     // loan stuff
+    java.util.List<io.github.unawarespecs.bankapp.model.LoanPlan> getLoanPlans() throws Exception;
+    void createLoanPlan(io.github.unawarespecs.bankapp.model.LoanPlan plan) throws Exception;
+    void deleteLoanPlan(int planId) throws Exception;
+
+    java.util.List<io.github.unawarespecs.bankapp.model.Loan> getLoans(Customer cust) throws Exception;
+    void applyForLoan(Customer cust, io.github.unawarespecs.bankapp.model.LoanPlan plan, double amount) throws Exception;
+    void payLoan(Customer cust, io.github.unawarespecs.bankapp.model.Loan loan, double amount) throws Exception;
+    int getCreditScore(Customer cust) throws Exception;
+    void updateCreditScore(Customer cust, int score) throws Exception;
+
+    java.util.List<io.github.unawarespecs.bankapp.model.Loan> getAllActiveLoans() throws Exception;
+    java.util.List<io.github.unawarespecs.bankapp.model.Loan> searchActiveLoans(String query) throws Exception;
 }

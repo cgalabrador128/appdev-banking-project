@@ -15,7 +15,7 @@ public class User {
 
     // User role (isAdmin = true: Administrator; otherwise Customer)
     boolean isAdmin;
-    private String role;
+    private String role = "User";
 
     @Override
     public String toString() {
@@ -23,7 +23,6 @@ public class User {
     }
 
     public User() {
-        this.role = "User";
         this.uuid = UUID.randomUUID();
         this.isAdmin = false;
     }
