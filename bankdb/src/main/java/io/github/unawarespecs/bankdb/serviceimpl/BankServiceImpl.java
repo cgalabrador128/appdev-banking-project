@@ -1,50 +1,40 @@
-package io.github.unawarespecs.bankapp.jfx.serviceimpl;
+package io.github.unawarespecs.bankdb.serviceimpl;
 
-import io.github.unawarespecs.bankapp.entity.AdministratorData;
-import io.github.unawarespecs.bankapp.entity.CustomerData;
-import io.github.unawarespecs.bankapp.entity.LoanData;
-import io.github.unawarespecs.bankapp.entity.LoanPlanData;
-import io.github.unawarespecs.bankapp.model.Administrator;
-import io.github.unawarespecs.bankapp.model.Customer;
-import io.github.unawarespecs.bankapp.model.Loan;
-import io.github.unawarespecs.bankapp.model.LoanPlan;
-import io.github.unawarespecs.bankapp.model.User;
-import io.github.unawarespecs.bankapp.repo.AdminDataRepository;
-import io.github.unawarespecs.bankapp.repo.CustDataRepository;
-import io.github.unawarespecs.bankapp.repo.LoanDataRepository;
-import io.github.unawarespecs.bankapp.repo.LoanPlanDataRepository;
+import io.github.unawarespecs.bankapp.model.*;
+import io.github.unawarespecs.bankapp.entity.*;
+import io.github.unawarespecs.bankapp.repo.*;
 import io.github.unawarespecs.bankapp.service.BankInterface;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.List;
 import java.util.stream.Stream;
 
-/*
-    TODO: move everything to the BankServiceImpl class (in bankdb)
-
-    reimplement na lang later to for gui app
-    refer na lang sa old product management system projects
-
-    this should be where the api is used
-    - Christian (unawarespecs)
- */
-
 @Service
-public class BankService implements BankInterface {
+public class BankServiceImpl implements BankInterface {
 
+    Logger log = LoggerFactory.getLogger(getClass());
+
+    @Autowired
     private final AdminDataRepository adminDataRepository;
+    @Autowired
     private final CustDataRepository custDataRepository;
+    @Autowired
     private final LoanDataRepository loanDataRepository;
+    @Autowired
     private final LoanPlanDataRepository loanPlanDataRepository;
 
     private Customer currentlyLoggedInCustomer;
     private Administrator currentlyLoggedInAdmin;
 
-    public BankService(AdminDataRepository adminDataRepository,
+    public BankServiceImpl(AdminDataRepository adminDataRepository,
                        CustDataRepository custDataRepository,
                        LoanDataRepository loanDataRepository,
                        LoanPlanDataRepository loanPlanDataRepository) {
@@ -130,6 +120,7 @@ public class BankService implements BankInterface {
 
     @Override
     public void createAccount(Customer cust) throws Exception {
+
         CustomerData customerData = new CustomerData();
         customerData.setUuid(cust.getUuid());
         customerData.setUsername(cust.getUsername());
@@ -141,7 +132,10 @@ public class BankService implements BankInterface {
         if (cust.getId() != 0){
             customerData.setId(cust.getId());
         }
+        log.info("Customer {} created", cust);
         custDataRepository.save(customerData);
+
+
     }
 
     @Override
@@ -160,6 +154,7 @@ public class BankService implements BankInterface {
         existingData.get().setUsername(cust.getUsername());
         existingData.get().setPassword(cust.getPassword());
         custDataRepository.save(existingData.get());
+        log.info("Customer {} info updated.", cust);
         return cust;
     }
 
@@ -168,9 +163,11 @@ public class BankService implements BankInterface {
         Optional<CustomerData> existingData = custDataRepository.findByUuid(cust.getUuid());
 
         if (existingData.isEmpty()) {
+            log.error("Cannot delete: Customer not found.");
             throw new Exception("Cannot delete: Customer not found.");
         }
 
+        log.info("Customer {} deleted.", cust);
         custDataRepository.delete(existingData.get());
     }
 
