@@ -1,6 +1,7 @@
 package io.github.unawarespecs.bankapp.jfx;
 
 import io.github.unawarespecs.bankapp.service.BankInterface;
+import io.github.unawarespecs.bankdb.controllers.MenuController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -14,14 +15,29 @@ public class SceneUtils {
 
         // Pass bankService to constructors requiring it
         fxmlLoader.setControllerFactory(param -> {
+
+            if (param == MenuController.class) {
+                MenuController controller = new MenuController(bankService);
+                controller.setOnLogoutRequested((currentStage) -> {
+                    try {
+                        SceneUtils.changeStage(currentStage, "/io/github/unawarespecs/bankapp/jfx/controllers/login.fxml", "Login", bankService);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                return controller;
+            }
+            // add controllers here
             try {
                 return param.getConstructor(BankInterface.class).newInstance(bankService);
-            } catch (Exception e) {
+            } catch (NoSuchMethodException e) {
                 try {
-                    return param.getConstructor().newInstance();
+                    return param.getDeclaredConstructor().newInstance();
                 } catch (Exception ex) {
-                    throw new RuntimeException(ex);
+                    throw new RuntimeException("Failed to instantiate controller: " + param.getName(), ex);
                 }
+            } catch (Exception e){
+                throw new RuntimeException("Dependency injection failed for controller: " + param.getName(), e);
             }
         });
 

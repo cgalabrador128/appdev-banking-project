@@ -4,15 +4,28 @@ import io.github.unawarespecs.bankapp.model.Customer;
 import io.github.unawarespecs.bankapp.service.BankInterface;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.util.function.Consumer;
 
 public class MenuController {
 
+
+    @FXML
+    private VBox parentStage;
+
     private final BankInterface bankService;
+    private Consumer<Stage> onLogoutRequested;
 
     public MenuController(BankInterface bankService) {
         this.bankService = bankService;
+    }
+    public void setOnLogoutRequested(Consumer<Stage> onLogoutRequested) {
+        this.onLogoutRequested = onLogoutRequested;
     }
 
     @FXML
@@ -53,7 +66,12 @@ public class MenuController {
         bankService.setCurrentlyLoggedInAdmin(null);
 
         showInformation("Logged Out", "You have successfully logged out of your session.");
-        // Place view navigation logic here to reload your standard login FXML file
+        Node source = (Node) event.getSource();
+        Stage stage = (Stage) source.getScene().getWindow();
+
+        if (onLogoutRequested !=null){
+            onLogoutRequested.accept(stage);
+        }
     }
 
     private void showInformation(String title, String message) {
