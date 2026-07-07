@@ -9,6 +9,8 @@ import io.github.unawarespecs.bankdb.serviceimpl.BankServiceImpl;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.jspecify.annotations.NonNull;
+
 import java.io.IOException;
 import java.util.Objects;
 
@@ -61,24 +63,7 @@ public class SceneUtils {
                 return controller;
             }
             if (param == AdminMenuController.class) {
-                AdminMenuController controller = new AdminMenuController(bankService);
-                controller.setOnLogoutRequested((currentStage) -> {
-                    logout(currentStage, bankService);
-                });
-                controller.setOnAccManagerRequested((currentStage) -> {
-                    try {
-                        SceneUtils.changeStage(stage, "/io/github/unawarespecs/bankapp/jfx/controllers/account_manager.fxml", "Bank Label - Account Manager", bankService);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-                controller.setOnLoanManagerRequested((currentStage) -> {
-                    try {
-                        SceneUtils.changeStage(stage, "/io/github/unawarespecs/bankapp/jfx/controllers/loan_manager.fxml", "Bank Label - Loan Manager", bankService);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+                AdminMenuController controller = getAdminMenuController(stage, bankService);
                 return controller;
             }
             if (param == AccountManagerController.class) {
@@ -90,7 +75,7 @@ public class SceneUtils {
             }
 
             if (param == LoanManagerController.class) {
-                AccountManagerController controller = new AccountManagerController(bankService);
+                LoanManagerController controller = new LoanManagerController(bankService);
                 controller.setOnBackRequested((currentStage) -> {
                     admindashboard(currentStage, bankService);
                 });
@@ -124,6 +109,28 @@ public class SceneUtils {
         stage.setTitle(title);
         stage.setScene(scene);
         stage.show();
+    }
+
+    private static @NonNull AdminMenuController getAdminMenuController(Stage stage, BankInterface bankService) {
+        AdminMenuController controller = new AdminMenuController(bankService);
+        controller.setOnLogoutRequested((currentStage) -> {
+            logout(currentStage, bankService);
+        });
+        controller.setOnAccManagerRequested((currentStage) -> {
+            try {
+                SceneUtils.changeStage(stage, "/io/github/unawarespecs/bankapp/jfx/controllers/account_manager.fxml", "Bank Label - Account Manager", bankService);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        controller.setOnLoanManagerRequested((currentStage) -> {
+            try {
+                SceneUtils.changeStage(stage, "/io/github/unawarespecs/bankapp/jfx/controllers/loan_manager.fxml", "Bank Label - Loan Manager", bankService);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        return controller;
     }
 
     public static void popUpStage(String fxml, String title, BankInterface bankService) throws IOException {

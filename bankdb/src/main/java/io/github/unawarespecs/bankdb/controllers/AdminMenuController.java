@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import lombok.Setter;
 
 import java.util.function.Consumer;
 
@@ -19,8 +20,11 @@ public class AdminMenuController
     private Button logoutBtn;
 
     private final BankInterface bankService;
+    @Setter
     private Consumer<Stage> onLogoutRequested;
+    @Setter
     private Consumer<Stage> onAccManagerRequested;
+    @Setter
     private Consumer<Stage> onLoanManagerRequested;
 
     @javafx.fxml.FXML
@@ -29,16 +33,6 @@ public class AdminMenuController
 
     public AdminMenuController(BankInterface bankService) {
         this.bankService = bankService;
-    }
-
-    public void setOnLogoutRequested(Consumer<Stage> onLogoutRequested) {
-        this.onLogoutRequested = onLogoutRequested;
-    }
-    public void setOnAccManagerRequested(Consumer<Stage> onAccManagerRequested) {
-        this.onAccManagerRequested = onAccManagerRequested;
-    }
-    public void setOnLoanManagerRequested(Consumer<Stage> onLoanManagerRequested) {
-        this.onLoanManagerRequested = onLoanManagerRequested;
     }
 
     @javafx.fxml.FXML
@@ -55,7 +49,7 @@ public class AdminMenuController
     public void onLogoutButtonClick(ActionEvent actionEvent) {
         bankService.setCurrentlyLoggedInAdmin(null);
 
-        showInformation("Logged Out", "You have successfully logged out of your session.");
+        showInformation();
         Node source = (Node) actionEvent.getSource();
         Stage stage = (Stage) source.getScene().getWindow();
 
@@ -74,11 +68,11 @@ public class AdminMenuController
         }
     }
 
-    private void showInformation(String title, String message) {
+    private void showInformation() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
+        alert.setTitle("Logged Out");
         alert.setHeaderText(null);
-        alert.setContentText(message);
+        alert.setContentText("You have successfully logged out of your session.");
         alert.showAndWait();
     }
 

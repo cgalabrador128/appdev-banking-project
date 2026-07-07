@@ -7,6 +7,7 @@ import io.github.unawarespecs.bankapp.model.User;
 import io.github.unawarespecs.bankapp.service.BankInterface;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -45,7 +46,7 @@ public class LoanManagerController {
     @Setter
     private Consumer<Stage> onBackRequested;
 
-    private javafx.collections.ObservableList<Loan> masterData = javafx.collections.FXCollections.observableArrayList();
+    private ObservableList<Loan> masterData = javafx.collections.FXCollections.observableArrayList();
 
     @javafx.fxml.FXML
     private Spinner<Integer> loanDurationField;
@@ -53,6 +54,8 @@ public class LoanManagerController {
     private Spinner<Double> loanMaxLimitField;
     @javafx.fxml.FXML
     private Spinner<Double> loanInterestField;
+    @FXML
+    private ListView<LoanPlan> loanPlansListView;
 
     @javafx.fxml.FXML
     public void initialize() throws Exception {
@@ -76,6 +79,19 @@ public class LoanManagerController {
             protected void updateItem(Double rate, boolean empty) {
                 super.updateItem(rate, empty);
                 setText(empty || rate == null ? null : String.format("%.2f%%", rate));
+            }
+        });
+
+        loanPlansListView.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(LoanPlan plan, boolean empty) {
+                super.updateItem(plan, empty);
+                if (empty || plan == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("%s (%d Mos) | Max: ₱%.2f | %.2f%%",
+                            plan.getName(), plan.getDuration(), plan.getMaxAmount(), plan.getInterestRate()));
+                }
             }
         });
 
@@ -104,26 +120,6 @@ public class LoanManagerController {
         }
     }
 
-    @javafx.fxml.FXML
-    public void onSavePlanClick(ActionEvent actionEvent) {
-        String name = loanNameField.getText();
-        if (name == null || name.trim().isEmpty()) {
-            showError("Input Error", "Please provide a valid identifier description for this configuration.");
-            return;
-        }
-
-        int duration = loanDurationField.getValue();
-        double maxLimit = loanMaxLimitField.getValue();
-        double interestRate = loanInterestField.getValue();
-
-        LoanPlan lp = new LoanPlan(name, duration, maxLimit, interestRate);
-        try {
-            bankService.createLoanPlan(lp);
-            showInformation("Loan Plan Created", "Plan configuration '" + name + "' updated successfully.");
-        } catch (Exception e) {
-            showError("Failed to Create Loan Plan", "Failed to compile transaction profile: " + e.getMessage());
-        }
-    }
 
     @javafx.fxml.FXML
     public void onSearchLoanClick(ActionEvent actionEvent) {
@@ -152,6 +148,10 @@ public class LoanManagerController {
             masterData.setAll(loans);
             loanAccountsTable.setItems(masterData);
         }
+        List<LoanPlan> plans = bankService.getLoanPlans();
+        if (plans != null) {
+            loanPlansListView.getItems().setAll(plans);
+        }
     }
 
     private void handleLoanSearch(String query) {
@@ -173,4 +173,31 @@ public class LoanManagerController {
 
         loanAccountsTable.setItems(filteredList);
     }
+
+    @FXML
+    public void onSavePlanClick(ActionEvent actionEvent) {
+        String name = loanNameField.getText();
+        if (name == null || name.trim().isEmpty()) {
+            showError("Input Error", "Please provide a valid identifier description for this configuration.");
+            return;
+        }
+
+        loanDurationField.increment(0);
+        loanMaxLimitField.increment(0);
+        loanInterestField.increment(0);
+
+        int duration = (loanDurationField.getValue() != null) ? loanDurationField.getValue() : 6;
+        double maxLimit = (loanMaxLimitField.getValue() != null) ? loanMaxLimitField.getValue() : 10000.0;
+        double interestRate = (loanInterestField.getValue() != null) ? loanInterestField.getValue() : 5.0;
+
+        LoanPlan lp = new LoanPlan(name, duration, maxLimit, interestRate);
+        try {
+            bankService.createLoanPlan(lp);
+            showInformation("Loan Plan Created", "Plan configuration '" + name + "' updated successfully.");
+            loadData();
+        } catch (Exception e) {
+            showError("Failed to Create Loan Plan", "Failed to compile transaction profile: " + e.getMessage());
+        }
+    }
+
 }
