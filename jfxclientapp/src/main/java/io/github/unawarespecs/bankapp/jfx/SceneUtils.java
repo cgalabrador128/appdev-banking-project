@@ -8,7 +8,6 @@ import io.github.unawarespecs.bankdb.controllers.LoginController;
 import io.github.unawarespecs.bankdb.controllers.TransferFundsController;
 import io.github.unawarespecs.bankdb.controllers.CustomerSettingsController;
 import io.github.unawarespecs.bankdb.serviceimpl.BankServiceImpl;
-import io.github.unawarespecs.bankdb.controllers.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -106,23 +105,6 @@ public class SceneUtils {
                         e.printStackTrace();
                     }
                 });
-                controller.setOnTransactionsRequested((currentStage) -> {
-                    try {
-                        changeStage(stage, "io/github/unawarespecs/bankapp/jfx/controllers/transaction.fxml", "View Transaction", bankService);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-
-                return controller;
-
-
-            }
-            if (param == TransactionController.class) {
-                TransactionController controller = new TransactionController(bankService);
-                controller.setOnBackRequested((currentStage) -> {
-                    dashboard(stage, bankService);
-                });
                 return controller;
             }
             if (param == AdminMenuController.class) {
@@ -144,6 +126,8 @@ public class SceneUtils {
                 });
                 return controller;
             }
+
+
 
 
 
@@ -196,7 +180,7 @@ public class SceneUtils {
         return controller;
     }
 
-    public static void popUpStage(String fxml, String title, BankInterface bankService) throws IOException {
+    public static void popUpStage(String fxml, String title, BankInterface bankService, Stage owner) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SceneUtils.class.getClassLoader().getResource(fxml.startsWith("/") ? fxml.substring(1) : fxml));
 
         fxmlLoader.setControllerFactory(param -> {

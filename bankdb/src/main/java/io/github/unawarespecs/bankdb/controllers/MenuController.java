@@ -23,9 +23,6 @@ public class MenuController {
     @Setter
     private Consumer<Stage> onTransferFundsRequested;
     @Setter
-    private Consumer<Stage> onTransactionsRequested;
-
-    @Setter
     private Consumer<Stage> onSettingsRequested;
 
     @Setter
@@ -81,8 +78,8 @@ public class MenuController {
         Node source = (Node) event.getSource();
         Stage stage = (Stage) source.getScene().getWindow();
 
-        if (onTransferFundsRequested !=null){
-            onTransferFundsRequested.accept(stage);
+        if (onTransactHistoryRequested !=null){
+            onTransactHistoryRequested.accept(stage);
         }
     }
 

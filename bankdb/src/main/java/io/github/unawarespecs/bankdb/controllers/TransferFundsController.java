@@ -1,20 +1,15 @@
 package io.github.unawarespecs.bankdb.controllers;
 
 import io.github.unawarespecs.bankapp.model.Customer;
-import io.github.unawarespecs.bankapp.model.Transaction;
 import io.github.unawarespecs.bankapp.service.BankInterface;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.Setter;
-
-import java.io.IOException;
 
 public class TransferFundsController {
 
@@ -124,9 +119,7 @@ public class TransferFundsController {
         // Attempt transfer
         try {
             bankService.transferMoney(sender, recipient, amount);
-            Transaction trans = new Transaction(sender.getId(), amount, "Transfer");
-            bankService.addTransaction(trans);
-            showInformation("Transfer Successful", "Successfully transferred $" + amount + " to account " + recipient.getUsername());
+            showInformation("Transfer Successful", "Successfully transferred Php " + amount + " to account " + recipient.getUsername());
 
             // Clear fields
             recipientField.clear();
@@ -170,4 +163,3 @@ public class TransferFundsController {
         alert.showAndWait();
     }
 }
-
