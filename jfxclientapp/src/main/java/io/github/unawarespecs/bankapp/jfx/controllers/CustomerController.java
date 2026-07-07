@@ -32,4 +32,9 @@ public class CustomerController {
             withdrawStatusLabel.setText("Withdrawal of $" + withdrawAmountField.getText() + " submitted!");
         }
     }
+
+    @FXML
+    private void handleBackToDashboard(ActionEvent event) {
+        System.out.println("Redirecting to dashboard...");
+    }
 }
