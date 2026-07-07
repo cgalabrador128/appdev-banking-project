@@ -1,7 +1,9 @@
 package io.github.unawarespecs.bankapp.jfx;
 
 import io.github.unawarespecs.bankapp.service.BankInterface;
+import io.github.unawarespecs.bankdb.controllers.AccountManagerController;import io.github.unawarespecs.bankdb.controllers.AdminMenuController;
 import io.github.unawarespecs.bankdb.controllers.MenuController;
+import io.github.unawarespecs.bankdb.serviceimpl.BankServiceImpl;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -9,6 +11,30 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class SceneUtils {
+    //commonly used change stages here
+    private static void logout(Stage stage, BankInterface bankService){
+        try {
+            SceneUtils.changeStage(stage, "/io/github/unawarespecs/bankapp/jfx/controllers/login.fxml", "Login", bankService);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void admindashboard(Stage stage, BankInterface bankService){
+        try {
+            SceneUtils.changeStage(stage, "/io/github/unawarespecs/bankapp/jfx/controllers/adminmenu.fxml", "Bank Label - Dashboard", bankService);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void dashboard(Stage stage, BankInterface bankService){
+        try {
+            SceneUtils.changeStage(stage, "/io/github/unawarespecs/bankapp/jfx/controllers/menu.fxml", "Bank Label - Dashboard", bankService);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void changeStage(Stage stage, String fxml, String title, BankInterface bankService) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SceneUtils.class.getClassLoader().getResource(fxml.startsWith("/") ? fxml.substring(1) : fxml));
@@ -19,15 +45,41 @@ public class SceneUtils {
             if (param == MenuController.class) {
                 MenuController controller = new MenuController(bankService);
                 controller.setOnLogoutRequested((currentStage) -> {
+                    logout(currentStage, bankService);
+                });
+                return controller;
+            }
+            if (param == AdminMenuController.class) {
+                AdminMenuController controller = new AdminMenuController(bankService);
+                controller.setOnLogoutRequested((currentStage) -> {
+                    logout(currentStage, bankService);
+                });
+                controller.setOnAccManagerRequested((currentStage) -> {
                     try {
-                        SceneUtils.changeStage(currentStage, "/io/github/unawarespecs/bankapp/jfx/controllers/login.fxml", "Login", bankService);
+                        SceneUtils.changeStage(stage, "/io/github/unawarespecs/bankapp/jfx/controllers/account_manager.fxml", "Bank Label - Account Manager", bankService);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                controller.setOnLoanManagerRequested((currentStage) -> {
+                    try {
+                        SceneUtils.changeStage(stage, "/io/github/unawarespecs/bankapp/jfx/controllers/loan_manager.fxml", "Bank Label - Loan Manager", bankService);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 });
                 return controller;
             }
+            if (param == AccountManagerController.class) {
+                AccountManagerController controller = new AccountManagerController(bankService);
+                controller.setOnBackRequested((currentStage) -> {
+                    admindashboard(currentStage, bankService);
+                });
+                return controller;
+            }
+
             // add controllers here
+
             try {
                 return param.getConstructor(BankInterface.class).newInstance(bankService);
             } catch (NoSuchMethodException e) {
@@ -47,7 +99,7 @@ public class SceneUtils {
                         SceneUtils.class.getResource("/assets/css/fluent-override.css")
                 ).toExternalForm()
         );
-        stage.setFullScreen(true);
+        stage.setMaximized(true);
         stage.setTitle(title);
         stage.setScene(scene);
         stage.show();

@@ -82,6 +82,7 @@ public class BankServiceImpl implements BankInterface {
 
         Stream<User> customerStream = customerList.stream().map(cust -> new User(
                 cust.getUuid(),
+                cust.getUsername(),
                 "Customer",
                 false
         ));
@@ -89,6 +90,7 @@ public class BankServiceImpl implements BankInterface {
 
         Stream<User> adminStream = adminList.stream().map(admin -> new User(
                 admin.getUuid(),
+                admin.getUsername(),
                 "Admin",
                 true
         ));

@@ -1,5 +1,6 @@
 package io.github.unawarespecs.bankdb.controllers;
 
+import io.github.unawarespecs.bankapp.model.Administrator;
 import io.github.unawarespecs.bankapp.model.Customer;
 import io.github.unawarespecs.bankapp.service.BankInterface;
 import javafx.event.ActionEvent;
@@ -23,7 +24,7 @@ public class LoginController {
 
     private final BankInterface bankService;
     private Runnable onSuccessfulLogin;
-
+    private Runnable onAdminLogin;
     private Stage getStageFromVBox() {
         return (Stage) parentBox.getScene().getWindow();
     }
@@ -32,9 +33,13 @@ public class LoginController {
         this.bankService = bankService;
     }
 
-    public void setOnSuccessfulLogin(Runnable onSuccessfulLogin) {
+    public void setOnAdminLogin (Runnable onAdminLogin){
+        this.onAdminLogin = onAdminLogin;
+    }
+    public void setOnSuccessfulLogin( Runnable onSuccessfulLogin) {
         this.onSuccessfulLogin = onSuccessfulLogin;
     }
+
 
     @javafx.fxml.FXML
     public void initialize() {
@@ -43,23 +48,40 @@ public class LoginController {
 
     @javafx.fxml.FXML
     public void onLoginButtonClick(ActionEvent actionEvent) {
-        String username = usernameField.getText().trim();
+        String user = usernameField.getText().trim();
         String password = passwordField.getText();
 
-        if (username.isEmpty() || password.isEmpty()) {
-            errorLabel.setText("Username and password fields cannot be empty.");
+        if (user.isEmpty() || password.isEmpty()) {
+            errorLabel.setText("ID and password fields cannot be empty.");
             return;
         }
+        int id = Integer.parseInt(user);
 
         try {
             Customer[] customers = bankService.getCustomers();
+            Administrator[] administrators = bankService.getAdmins();
             Customer matchingCustomer = null;
+            Administrator matchingAdmin = null;
 
             for (Customer cust : customers) {
                 //System.out.println(cust);
-                if (cust.getUsername().equals(username) && cust.getPassword().equals(password)) {
+                if (cust.getId() == id && cust.getPassword().equals(password)) {
                     matchingCustomer = cust;
                     break;
+                }
+            }
+            if (matchingCustomer == null) {
+                for (Administrator adm : administrators){
+                    if (adm.getId() == id && adm.getPassword().equals(password)){
+                        matchingAdmin = adm;
+                        break;
+                    }
+                }
+                bankService.setCurrentlyLoggedInAdmin(matchingAdmin);
+                errorLabel.setText("Login successful! Redirecting...");
+
+                if(onAdminLogin!=null){
+                    onAdminLogin.run();
                 }
             }
             //System.out.println(matchingCustomer);
@@ -76,7 +98,7 @@ public class LoginController {
                     onSuccessfulLogin.run();
                 }
             } else {
-                errorLabel.setText("Invalid username or password.");
+                errorLabel.setText("Invalid id or password.");
             }
 
         } catch (Exception e) {

@@ -27,8 +27,7 @@ public class Customer extends User {
     }
     public Customer(UUID uuid, String username, String password, String role, boolean isAdmin, int id, double balance, int pin, boolean frozen, int creditScore) {
         // Username, password, and role are handled here.
-        super(uuid, role, isAdmin);
-        this.setUsername(username);
+        super(uuid, username, role, isAdmin);
         this.setPassword(password);
         this.setId(id);
         this.setRole(role);

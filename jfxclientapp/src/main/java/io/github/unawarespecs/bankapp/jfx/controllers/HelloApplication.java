@@ -50,6 +50,19 @@ public class HelloApplication extends Application {
                     }
                 });
 
+                controller.setOnAdminLogin(() -> {
+                    try {
+                        SceneUtils.changeStage(
+                                stage,
+                                "/io/github/unawarespecs/bankapp/jfx/controllers/adminmenu.fxml",
+                                "Bank label- Dashboard",
+                                bankService
+                        );
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
                 return controller;
             }
             try {

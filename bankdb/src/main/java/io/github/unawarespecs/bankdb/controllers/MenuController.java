@@ -14,16 +14,15 @@ import java.util.function.Consumer;
 
 public class MenuController {
 
-
-    @FXML
-    private VBox parentStage;
-
     private final BankInterface bankService;
     private Consumer<Stage> onLogoutRequested;
+    @FXML
+    private VBox parentStage;
 
     public MenuController(BankInterface bankService) {
         this.bankService = bankService;
     }
+
     public void setOnLogoutRequested(Consumer<Stage> onLogoutRequested) {
         this.onLogoutRequested = onLogoutRequested;
     }
@@ -63,7 +62,6 @@ public class MenuController {
     @FXML
     void onLogoutClick(ActionEvent event) {
         bankService.setCurrentlyLoggedInCustomer(null);
-        bankService.setCurrentlyLoggedInAdmin(null);
 
         showInformation("Logged Out", "You have successfully logged out of your session.");
         Node source = (Node) event.getSource();
